@@ -1,48 +1,69 @@
-# Job Application Tracker
+# 🚀 TrackJob: Premium Job Application Tracker
 
-A modern, full-stack application to track and manage job applications. Built with a robust Java/Spring Boot backend and a premium React/Tailwind frontend.
+A high-performance, aesthetically stunning Job Application Tracker built with **Spring Boot 3 (Java 21)** and **React**. Designed for clarity, speed, and career growth.
 
-## 🚀 Teck Stack
-- **Backend:** Java 21, Spring Boot 3, Spring Data JPA, Jakarta Validation
-- **Frontend:** React (Vite), Tailwind CSS, Axios, Lucide Icons
-- **Database:** PostgreSQL
-- **DevOps:** Docker, Docker Compose, GitHub Actions
+---
 
-## 📊 Project Metrics
-- **JobApplicationController Unit Tests:** 12 test cases
-- **UserServiceController Unit Tests:** 6 test cases
-- **Service Layer Test Coverage:** ~92% (JaCoCo)
-- **Average API Response Time:** ~15ms (local)
+## ✨ Features
+- **Modern Dashboard**: High-contrast, premium dark mode UI with centered alignment for priority data.
+- **Full CRUD**: Manage your application lifecycle (Applied, Interview, Offer, Rejected).
+- **Fast Search**: Instant filtering by company or role.
+- **Dockerized**: One-command setup for Backend, Frontend, and PostgreSQL.
+- **Developer Focused**: Service-layer unit testing with >80% coverage and OpenAPI (Swagger) documentation.
 
-## 🛠️ Getting Started
-### Running with Docker Compose (Recommended)
-1. Clone the repository.
-2. Run the full stack with a single command:
-   ```bash
-   docker-compose up --build
-   ```
-3. Access the application:
-   - **Frontend:** [http://localhost:5173](http://localhost:5173)
-   - **Swagger API Docs:** [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+---
 
-### Manual Setup
-#### Backend
-1. Ensure Java 21 and Maven are installed.
-2. Update `application.yml` with your local DB credentials.
-3. Run `mvn spring-boot:run` in the `backend/` directory.
+## 📸 Screenshots
 
-#### Frontend
-1. Run `npm install` in the `frontend/` directory.
-2. Run `npm run dev`.
+### 🖥️ Main Dashboard
+![Dashboard Interface](./screenshots/1.png)
+*Modern centered layout with high-visibility filters.*
 
-## 📂 Project Structure
-- `backend/`: Spring Boot REST API
-- `frontend/`: React single page application
-- `database/`: SQL initialization scripts
-- `.github/`: CI configurations
+### 📝 Tracking Record
+![Add Application](./screenshots/3.png)
+*Clear, large-scale input forms for seamless data entry.*
 
-## 🔍 SQL Queries (Custom JPA)
-This project uses manual JPQL/SQL queries for enhanced data retrieval:
-1. `countApplicationsByStatusForUser`: Aggregates application counts by status for a specific user.
-2. `findRecentApplicationsForUser`: Retrieves applications from the last 30 days.
-3. `searchByCompanyForUser`: Performs a case-insensitive fuzzy search on company names.
+---
+
+## 🛠️ Tech Stack
+
+### Backend
+- **Java 21** & **Spring Boot 3**
+- **Spring Data JPA** (PostgreSQL)
+- **Jakarta Validation** & **Swagger UI**
+- **JUnit 5** & **Mockito**
+
+### Frontend
+- **React 18** (Vite)
+- **Tailwind CSS** (via CDN Fallback for stability)
+- **Lucide Icons** & **Glassmorphism Design**
+
+---
+
+## 🚀 Quick Start
+
+### 1. Requirements
+- Docker & Docker Compose installed.
+
+### 2. Run the Application
+From the root directory, execute:
+```bash
+docker-compose up --build
+```
+- **Frontend**: [http://localhost:5173](http://localhost:5173)
+- **Backend API**: [http://localhost:8080](http://localhost:8080)
+- **Swagger Docs**: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+
+### 3. Run Backend Tests
+To verify the logic and coverage:
+```bash
+docker-compose run --rm backend mvn clean test
+```
+
+---
+
+## 👤 Credits
+Default Demo User: **John Doe** (`johndoe@gmail.com`)
+
+---
+*Built with focus on Carrer Intelligence.*

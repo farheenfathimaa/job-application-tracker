@@ -1,0 +1,23 @@
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build & Dependencies
+node_modules/
+backend/target/
+frontend/dist/
+.env
+
+# Docker Logs
+*.log
+docker-compose.override.yml
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Test Coverage
+target/site/jacoco/
+coverage/
