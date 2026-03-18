@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { applicationService } from '../api/apiService';
-import { Plus, Search, Filter, Briefcase, Calendar, CheckCircle2, Clock, XCircle, MoreVertical, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Search, Calendar, CheckCircle2, Clock, XCircle, Edit2, Trash2, Filter, AlertCircle, Briefcase, MapPin } from 'lucide-react';
 
 const Dashboard = ({ userId }) => {
   const [applications, setApplications] = useState([]);
@@ -52,121 +52,150 @@ const Dashboard = ({ userId }) => {
     }
   };
 
+  const getStatusConfig = (status) => {
+    switch (status) {
+      case 'APPLIED': return { color: 'bg-blue-400 border-blue-500 text-black', icon: <Clock size={20} /> };
+      case 'INTERVIEW': return { color: 'bg-purple-400 border-purple-500 text-black', icon: <Filter size={20} /> };
+      case 'OFFER': return { color: 'bg-emerald-400 border-emerald-500 text-black', icon: <CheckCircle2 size={20} /> };
+      case 'REJECTED': return { color: 'bg-rose-400 border-rose-500 text-black', icon: <XCircle size={20} /> };
+      default: return { color: 'bg-slate-400 border-slate-500 text-black', icon: null };
+    }
+  };
+
   const filteredApps = statusFilter === 'ALL' 
     ? applications 
     : applications.filter(app => app.status === statusFilter);
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'APPLIED': return 'text-blue-400 bg-blue-400/10 border-blue-400/20';
-      case 'INTERVIEW': return 'text-purple-400 bg-purple-400/10 border-purple-400/20';
-      case 'OFFER': return 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20';
-      case 'REJECTED': return 'text-rose-400 bg-rose-400/10 border-rose-400/20';
-      default: return 'text-slate-400 bg-slate-400/10 border-slate-400/20';
-    }
-  };
-
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'APPLIED': return <Briefcase size={14} />;
-      case 'INTERVIEW': return <Clock size={14} />;
-      case 'OFFER': return <CheckCircle2 size={14} />;
-      case 'REJECTED': return <XCircle size={14} />;
-      default: return null;
-    }
-  };
-
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Job Applications</h1>
-          <p className="text-slate-400 mt-1">Track and manage your career journey.</p>
-        </div>
-        <button 
-          onClick={() => { setCurrentApp(null); setIsModalOpen(true); }}
-          className="btn-primary flex items-center gap-2 w-fit"
-        >
-          <Plus size={20} />
-          New Application
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        {['ALL', 'APPLIED', 'INTERVIEW', 'OFFER', 'REJECTED'].map(status => (
-          <button
-            key={status}
-            onClick={() => setStatusFilter(status)}
-            className={`px-4 py-3 rounded-xl border transition-all duration-200 text-sm font-medium flex items-center justify-between ${
-              statusFilter === status 
-                ? 'bg-primary-600/10 border-primary-500/50 text-primary-400 ring-1 ring-primary-500/50' 
-                : 'bg-slate-900/50 border-slate-800 text-slate-400 hover:border-slate-700'
-            }`}
+    <div className="space-y-16 animate-up">
+      {/* Hero Section - Centered */}
+      <section className="text-center space-y-6">
+        <h1 className="text-hero">Job Applications.</h1>
+        <p className="text-subhero max-w-3xl mx-auto">
+          Track and manage your career journey. <br className="hidden md:block" /> Stay organized, stay ahead.
+        </p>
+        <div className="pt-6">
+          <button 
+            onClick={() => { setCurrentApp(null); setIsModalOpen(true); }}
+            className="btn-primary mx-auto"
           >
-            {status}
-            <span className="bg-slate-800 px-2 py-0.5 rounded text-xs">
-              {status === 'ALL' ? applications.length : applications.filter(a => a.status === status).length}
-            </span>
+            <Plus size={28} strokeWidth={3} />
+            Track Opportunity
           </button>
-        ))}
+        </div>
+      </section>
+
+      {/* Stats/Filters - Centered */}
+      <div className="flex flex-wrap justify-center items-center gap-4 py-8 border-y border-white/5">
+        {['ALL', 'APPLIED', 'INTERVIEW', 'OFFER', 'REJECTED'].map(status => {
+          const count = status === 'ALL' ? applications.length : applications.filter(a => a.status === status).length;
+          return (
+            <button
+              key={status}
+              onClick={() => setStatusFilter(status)}
+              className={`px-8 py-4 rounded-2xl border-2 transition-all duration-300 font-black text-sm uppercase tracking-widest flex items-center gap-4 ${
+                statusFilter === status 
+                  ? 'bg-primary-600 border-primary-500 text-black shadow-xl shadow-primary-500/20 active:scale-105' 
+                  : 'bg-slate-900 border-white/5 text-black hover:border-white/10 hover:bg-slate-800'
+              }`}
+            >
+              {status}
+              <span className={`px-2.5 py-0.5 rounded-lg text-xs ${statusFilter === status ? 'bg-black/20 text-black' : 'bg-slate-950 text-slate-400'}`}> {count}</span>
+            </button>
+          );
+        })}
       </div>
 
-      <div className="glass rounded-2xl p-4 mb-8 flex flex-col md:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+      {/* Large Search Section - Centered */}
+      <div className="max-w-4xl mx-auto space-y-2">
+        <div className="text-center mb-4">
+          <label className="text-xs font-black uppercase tracking-[0.3em] text-slate-500">Quick Search Filter</label>
+        </div>
+        <div className="relative">
+          <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500" size={32} />
           <input 
             type="text" 
-            placeholder="Search by company..."
-            className="input-field pl-10"
+            placeholder="Search company or role..."
+            className="input-large pl-16 h-20 text-2xl"
             value={searchTerm}
             onChange={handleSearch}
           />
         </div>
       </div>
 
+      {/* Applications Grid - Card headers Left-aligned for clarity */}
       {loading ? (
-        <div className="flex justify-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
+        <div className="flex flex-col items-center justify-center py-40">
+          <div className="h-20 w-20 border-8 border-primary-500/20 border-t-primary-500 rounded-full animate-spin"></div>
+          <span className="mt-8 text-2xl font-black text-slate-700 uppercase tracking-tighter">Updating Pipeline...</span>
         </div>
       ) : filteredApps.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredApps.map(app => (
-            <div key={app.id} className="glass rounded-2xl p-6 hover:border-primary-500/30 transition-all duration-300 group">
-              <div className="flex justify-between items-start mb-4">
-                <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor(app.status)}`}>
-                  {getStatusIcon(app.status)}
-                  {app.status}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
+          {filteredApps.map((app, index) => {
+            const config = getStatusConfig(app.status);
+            return (
+              <div 
+                key={app.id} 
+                className="glass rounded-[3rem] p-10 hover:bg-white/[0.08] hover:border-primary-500/30 transition-all duration-500 group relative flex flex-col min-h-[420px]"
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                {/* Status Badge */}
+                <div className="mb-8">
+                  <div className={`inline-flex items-center gap-2 px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest border-2 ${config.color}`}>
+                    {config.icon}
+                    {app.status}
+                  </div>
                 </div>
-                <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button onClick={() => { setCurrentApp(app); setIsModalOpen(true); }} className="p-2 hover:bg-white/5 rounded-lg text-slate-400 hover:text-white">
-                    <Edit2 size={16} />
-                  </button>
-                  <button onClick={() => handleDelete(app.id)} className="p-2 hover:bg-rose-500/10 rounded-lg text-slate-400 hover:text-rose-400">
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-1">{app.role}</h3>
-              <p className="text-primary-400 font-medium mb-4">{app.company}</p>
-              
-              <div className="flex items-center gap-4 text-sm text-slate-400 mb-4">
-                <div className="flex items-center gap-1.5">
-                  <Calendar size={14} />
-                  {new Date(app.dateApplied).toLocaleDateString()}
-                </div>
-              </div>
 
-              {app.notes && (
-                <p className="text-sm text-slate-500 line-clamp-2 italic">"{app.notes}"</p>
-              )}
-            </div>
-          ))}
+                {/* Left-Aligned Main Content for better Scanability */}
+                <div className="space-y-4">
+                  <h3 className="text-4xl font-black text-white leading-tight tracking-tight group-hover:text-primary-400 transition-colors">
+                    {app.role}
+                  </h3>
+                  <div className="flex items-center gap-3 text-2xl text-slate-400 font-bold">
+                    <Briefcase size={22} className="text-primary-500" />
+                    {app.company}
+                  </div>
+                </div>
+
+                {/* Hover Actions */}
+                <div className="absolute top-8 right-8 flex gap-3 opacity-0 group-hover:opacity-100 transition-all transform scale-90 group-hover:scale-100">
+                  <button onClick={() => { setCurrentApp(app); setIsModalOpen(true); }} className="h-14 w-14 bg-slate-900 border border-white/5 rounded-2xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary-600 transition-all active:scale-90">
+                    <Edit2 size={24} />
+                  </button>
+                  <button onClick={() => handleDelete(app.id)} className="h-14 w-14 bg-slate-900 border border-white/5 rounded-2xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-rose-600 transition-all active:scale-90">
+                    <Trash2 size={24} />
+                  </button>
+                </div>
+
+                {/* Footer Data - Mixed Alignment */}
+                <div className="mt-auto pt-8 border-t border-white/5 space-y-6">
+                  <div className="flex items-center gap-3 text-lg text-slate-500 font-bold">
+                    <Calendar size={20} />
+                    APPLIED: <span className="text-white ml-1">{new Date(app.dateApplied).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                  </div>
+
+                  {app.notes && (
+                    <div className="p-6 bg-slate-950/30 rounded-[2rem] border border-white/5">
+                      <p className="text-sm text-slate-400 italic leading-relaxed line-clamp-3">
+                        "{app.notes}"
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       ) : (
-        <div className="glass rounded-2xl py-20 text-center">
-          <Briefcase className="mx-auto text-slate-700 mb-4" size={48} />
-          <h3 className="text-xl font-medium text-slate-300">No applications found</h3>
-          <p className="text-slate-500 mt-2">Start your journey by adding your first job application.</p>
+        <div className="text-center py-40 glass rounded-[4rem] border-dashed border-4 border-slate-800 max-w-4xl mx-auto w-full">
+          <div className="h-24 w-24 bg-slate-900 rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 shadow-inner">
+            <Briefcase size={60} className="text-slate-800" />
+          </div>
+          <h3 className="text-4xl font-black text-slate-300 tracking-tighter uppercase">No Records Found</h3>
+          <p className="text-xl text-slate-500 mt-6 max-w-md mx-auto leading-relaxed">
+            Your application trajectory is currently blank. Start your journey by logging your first opportunity.
+          </p>
         </div>
       )}
 
@@ -184,7 +213,6 @@ const Dashboard = ({ userId }) => {
 
 export default Dashboard;
 
-// Placeholder for ApplicationForm component
 const ApplicationForm = ({ userId, currentApp, onClose, onSuccess }) => {
   const [formData, setFormData] = useState(currentApp || {
     company: '',
@@ -208,80 +236,97 @@ const ApplicationForm = ({ userId, currentApp, onClose, onSuccess }) => {
       onSuccess();
     } catch (err) {
       console.error('Save failed', err);
-      alert('Error saving application. Check console.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-      <div className="glass w-full max-w-lg rounded-2xl p-8 shadow-2xl">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-white">{currentApp ? 'Edit' : 'New'} Application</h2>
-          <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full text-slate-400 hover:text-white">
-            <XCircle size={24} />
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-8">
+      <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-3xl" onClick={onClose}></div>
+      <div className="glass w-full max-w-4xl rounded-[4rem] p-16 shadow-[0_0_150px_rgba(0,0,0,0.4)] relative animate-in zoom-in-95 duration-500">
+        <div className="flex justify-between items-center mb-14">
+          <div>
+            <h2 className="text-5xl font-black text-white tracking-tighter">
+              {currentApp ? 'UPDATE' : 'CREATE'} RECORD
+            </h2>
+            <p className="text-xl text-slate-500 font-bold uppercase tracking-[0.2em] mt-2">Opportunity Logistics</p>
+          </div>
+          <button onClick={onClose} className="h-20 w-20 bg-white/5 border border-white/10 rounded-3xl flex items-center justify-center text-slate-400 hover:text-white transition-all hover:rotate-90">
+            <XCircle size={40} />
           </button>
         </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-400 mb-1.5">Company Name</label>
-            <input 
-              required
-              className="input-field"
-              value={formData.company}
-              onChange={e => setFormData({...formData, company: e.target.value})}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-400 mb-1.5">Job Role</label>
-            <input 
-              required
-              className="input-field"
-              value={formData.role}
-              onChange={e => setFormData({...formData, role: e.target.value})}
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1.5">Status</label>
-              <select 
-                className="input-field appearance-none cursor-pointer"
-                value={formData.status}
-                onChange={e => setFormData({...formData, status: e.target.value})}
-              >
-                <option value="APPLIED">Applied</option>
-                <option value="INTERVIEW">Interview</option>
-                <option value="OFFER">Offer</option>
-                <option value="REJECTED">Rejected</option>
-              </select>
+        
+        <form onSubmit={handleSubmit} className="space-y-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <div className="space-y-4">
+              <label className="text-sm font-black uppercase tracking-[0.3em] text-slate-500 ml-2">Employer Name</label>
+              <input 
+                required
+                className="input-large"
+                placeholder="e.g. Meta"
+                value={formData.company}
+                onChange={e => setFormData({...formData, company: e.target.value})}
+              />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1.5">Date Applied</label>
+            <div className="space-y-4">
+              <label className="text-sm font-black uppercase tracking-[0.3em] text-slate-500 ml-2">Desired Role</label>
+              <input 
+                required
+                className="input-large"
+                placeholder="e.g. Lead Designer"
+                value={formData.role}
+                onChange={e => setFormData({...formData, role: e.target.value})}
+              />
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <div className="space-y-4">
+              <label className="text-sm font-black uppercase tracking-[0.3em] text-slate-500 ml-2">Application Status</label>
+              <div className="relative">
+                <select 
+                  className="input-large appearance-none cursor-pointer pr-16"
+                  value={formData.status}
+                  onChange={e => setFormData({...formData, status: e.target.value})}
+                >
+                  <option value="APPLIED">APPLIED</option>
+                  <option value="INTERVIEW">INTERVIEW</option>
+                  <option value="OFFER">OFFER</option>
+                  <option value="REJECTED">REJECTED</option>
+                </select>
+                <Filter className="absolute right-8 top-1/2 -translate-y-1/2 text-slate-600 pointer-events-none" size={24} />
+              </div>
+            </div>
+            <div className="space-y-4">
+              <label className="text-sm font-black uppercase tracking-[0.3em] text-slate-500 ml-2">Logged Date</label>
               <input 
                 type="date"
                 required
-                className="input-field"
+                className="input-large"
                 value={formData.dateApplied}
                 onChange={e => setFormData({...formData, dateApplied: e.target.value})}
               />
             </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-400 mb-1.5">Notes</label>
+
+          <div className="space-y-4">
+            <label className="text-sm font-black uppercase tracking-[0.3em] text-slate-500 ml-2">Confidential Notes</label>
             <textarea 
-              rows={3}
-              className="input-field resize-none text-sm"
+              rows={4}
+              className="input-large resize-none py-6 h-auto"
+              placeholder="Context, contact persons, or preparation points..."
               value={formData.notes || ''}
               onChange={e => setFormData({...formData, notes: e.target.value})}
             />
           </div>
+
           <button 
             type="submit" 
             disabled={loading}
-            className="btn-primary w-full mt-4 flex justify-center items-center py-3"
+            className="w-full h-24 bg-primary-600 hover:bg-primary-500 text-black rounded-[2.5rem] font-black text-2xl uppercase tracking-widest shadow-2xl shadow-primary-500/20 active:scale-95 transition-all flex justify-center items-center"
           >
-            {loading ? <div className="h-5 w-5 border-2 border-white/30 border-t-white animate-spin rounded-full"></div> : (currentApp ? 'Update Application' : 'Create Application')}
+            {loading ? <div className="h-8 w-8 border-4 border-black/20 border-t-black animate-spin rounded-full"></div> : (currentApp ? 'Sync Changes' : 'Execute Tracking')}
           </button>
         </form>
       </div>
